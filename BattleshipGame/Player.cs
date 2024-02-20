@@ -49,14 +49,53 @@ namespace BattleshipGame
         int[] takeCoordinatesFromUser()
         {
             int[] test = new int[2];
+            char[] characters;
             
-            Console.Write("Podaj a: ");
-            test[0] = int.Parse(Console.ReadLine()) - 1;
+            bool endFirstLoop = false;
+            do
+            {
+                bool endSecondLoop = false;
+                do
+                {
+                    Console.Write("Podaj koordynaty części statku: ");
+                    characters = Console.ReadLine().ToCharArray();
+                    
+                    if(characters.Length != 2)
+                    {
+                        Console.WriteLine("Error! Koordynaty muszą składać się z dwóch znaków!\n");
+                    }else endSecondLoop = true;
 
-            Console.Write("Podaj b: ");
-            test[1] = int.Parse(Console.ReadLine()) - 1;
+                } while(!endSecondLoop);
+
+                if(!CheckIfCharactersAreCorrect(characters))
+                {
+                    Console.WriteLine("Error! Podano złe koordynaty!");
+                }else endFirstLoop = true;
+
+                
+
+            } while(!endFirstLoop);
+
+            test[0] = characters[0] - 65;
+            test[1] = characters[1] - 48;
+
+            Console.WriteLine($"Literka: {test[0]} | Liczba: {test[1]}");
 
             return test;
+        }
+
+        bool CheckIfCharactersAreCorrect(char[] characters)
+        {
+            char[] correctCharacters = { 'A', 'B', 'C', 'D', 'F', 'G', 'H', 'I', 'J' };
+
+            if (characters[1] < '0' || characters[1] > '9') return false;
+
+            for(int i=0; i < correctCharacters.Length; i++) 
+            {
+                if (correctCharacters[i] == characters[0]) return true;
+            }
+
+            return false;
         }
     }
 }
