@@ -49,11 +49,11 @@ namespace BattleshipGame
         int[] takeCoordinatesFromUser()
         {
             int[] test = new int[2];
-
-            Console.WriteLine("Podaj a: ");
+            
+            Console.Write("Podaj a: ");
             test[0] = int.Parse(Console.ReadLine()) - 1;
 
-            Console.WriteLine("Podaj b: ");
+            Console.Write("Podaj b: ");
             test[1] = int.Parse(Console.ReadLine()) - 1;
 
             return test;

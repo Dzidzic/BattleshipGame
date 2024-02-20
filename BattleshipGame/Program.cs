@@ -12,11 +12,11 @@ namespace BattleshipGame
         {
             Player firstPlayer = new Player();
             Player secondPlayer = new Player();
-            Player test = new Player();
             bool isFirstPlayerTurn = true;
 
             ShowGameboard();
-            Console.ReadKey();
+            Console.Write("\nPress <Enter> to exit...");
+            while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
 
 
             void ShowGameboard()
