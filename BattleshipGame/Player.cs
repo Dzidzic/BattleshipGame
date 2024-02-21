@@ -1,7 +1,9 @@
 ﻿using BattleshipGame;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
@@ -27,7 +29,7 @@ namespace BattleshipGame
 
         void createShips()
         {
-            for (int i = 1; i <= 1; i++)
+            for (int i = 1; i <= 2; i++)
             {
                 int n;
 
@@ -36,54 +38,75 @@ namespace BattleshipGame
                 else if (i > 1) { n = 3; }
                 else n = 4;
 
-                List<int[]> shipPartsCoordinates = new List<int[]>();
+                List<int[]> curShipPartsCoordinates = new List<int[]>();
 
                 for (int j = 0; j < n; j++)
                 {
-                    shipPartsCoordinates.Add(takeCoordinatesFromUser());
+                    curShipPartsCoordinates.Add(takeCoordinatesFromUser(curShipPartsCoordinates));
                 }
 
-                playerShips.Add(new Ship(shipPartsCoordinates));
+                playerShips.Add(new Ship(curShipPartsCoordinates));
             }
         }
-        int[] takeCoordinatesFromUser()
-        {
-            int[] test = new int[2];
+        int[] takeCoordinatesFromUser(List<int[]> curShipPartsCoordinates)
+        {           
+            int[] coordinates = new int[2];
             char[] characters;
             
-            bool endFirstLoop = false;
+            bool endThirdLoop = false;
             do
             {
                 bool endSecondLoop = false;
                 do
                 {
-                    Console.Write("Podaj koordynaty części statku: ");
-                    characters = Console.ReadLine().ToCharArray();
-                    
-                    if(characters.Length != 2)
+                    bool endFirstLoop = false;
+                    do
                     {
-                        Console.WriteLine("Error! Koordynaty muszą składać się z dwóch znaków!\n");
-                    }else endSecondLoop = true;
+                        Console.Write("Podaj koordynaty części statku: ");
+                        characters = Console.ReadLine().ToCharArray();
 
-                } while(!endSecondLoop);
+                        if (characters.Length != 2)
+                        {
+                            Console.WriteLine("Error! Coordinates must consist of two characters! \n");
+                        }
+                        else endFirstLoop = true;
 
-                if(!CheckIfCharactersAreCorrect(characters))
-                {
-                    Console.WriteLine("Error! Podano złe koordynaty!");
-                }else endFirstLoop = true;
+                    } while (!endFirstLoop);
 
+                    if (!CheckIfCharactersAreCorrect(characters))
+                    {
+                        Console.WriteLine("Error! Wrong coordinates entered! \n");
+                    }
+                    else endSecondLoop = true;
+
+                } while (!endSecondLoop);
+
+                coordinates[0] = characters[0] - 65;
+                coordinates[1] = characters[1] - 48;
                 
+                if(CheckIfFieldIsOccupied(coordinates, curShipPartsCoordinates))
+                {
+                    Console.WriteLine("Error! The given place is already occupied! \n");
+                }else endThirdLoop = true;
 
-            } while(!endFirstLoop);
+            } while (!endThirdLoop);
 
-            test[0] = characters[0] - 65;
-            test[1] = characters[1] - 48;
 
-            Console.WriteLine($"Literka: {test[0]} | Liczba: {test[1]}");
-
-            return test;
+            return coordinates;
         }
+        bool CheckIfFieldIsOccupied(int[] coordinates, List<int[]> curShipPartsCoordinates)
+        {
+            for (int i = 0; i < curShipPartsCoordinates.Count; i++)
+            {
+                if (curShipPartsCoordinates[i][0] == coordinates[0] && curShipPartsCoordinates[i][1] == coordinates[1]) return true;
+            }          
+            for(int i=0; i < playerShips.Count; i++) 
+            {
+                if(playerShips[i].compareCoordinates(coordinates)) return true;
+            }
 
+            return false;
+        }
         bool CheckIfCharactersAreCorrect(char[] characters)
         {
             char[] correctCharacters = { 'A', 'B', 'C', 'D', 'F', 'G', 'H', 'I', 'J' };
