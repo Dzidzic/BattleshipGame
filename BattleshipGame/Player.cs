@@ -29,7 +29,7 @@ namespace BattleshipGame
 
         void createShips()
         {
-            for (int i = 1; i <= 2; i++)
+            for (int i = 1; i <= 1; i++)
             {
                 int n;
 
