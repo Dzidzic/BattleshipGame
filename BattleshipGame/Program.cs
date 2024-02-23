@@ -10,9 +10,9 @@ namespace BattleshipGame
     {
         static void Main(string[] args)
         {
-            Player firstPlayer = new Player();
-            Player secondPlayer = new Player();
             bool isFirstPlayerTurn = true;
+            Player firstPlayer = new Player(isFirstPlayerTurn);
+            Player secondPlayer = new Player(!isFirstPlayerTurn);
 
             ShowGameboard();
             Console.Write("\nPress <Enter> to exit...");
@@ -21,7 +21,10 @@ namespace BattleshipGame
 
             void ShowGameboard()
             {
-                Console.WriteLine("\n                  | Enemy Board |             \t                  | Yours Board |");
+                Console.Clear();
+                int playerNumber = isFirstPlayerTurn ? 1 : 2;
+                Console.WriteLine($"\n                                         | Player {playerNumber} Turn |\n");
+                Console.WriteLine("\n                  | Enemy Board |             \t                  | Your Board |");
                 Console.WriteLine("\n       0   1   2   3   4   5   6   7   8   9  \t       0   1   2   3   4   5   6   7   8   9  ");
                 for (int i = 1; i <= 21; i++)
                 {
@@ -40,9 +43,9 @@ namespace BattleshipGame
                             }
                             else if (j == 1 && isFirstPlayerTurn || j == 0 && !isFirstPlayerTurn)
                             {
-                                rowElement = $" {firstPlayer.showPlayerBoard((i / 2) - 1, k, isFirstPlayerTurn ? true : false)} |";
+                                rowElement = $" {firstPlayer.getPlayerBoard((i / 2) - 1, k, isFirstPlayerTurn ? true : false)} |";
                             }
-                            else rowElement = $" {secondPlayer.showPlayerBoard((i / 2) - 1, k, !isFirstPlayerTurn ? true : false)} |";
+                            else rowElement = $" {secondPlayer.getPlayerBoard((i / 2) - 1, k, !isFirstPlayerTurn ? true : false)} |";
                             row += rowElement;
                         }
 
@@ -54,7 +57,7 @@ namespace BattleshipGame
             }
         }
 
-        static string convertToRowCharacter(int characterNumber)
+        public static string convertToRowCharacter(int characterNumber)
         {
             switch (characterNumber)
             {

@@ -12,15 +12,14 @@ namespace BattleshipGame
     internal class Ship
     {
         public List<int[]> parts = new List<int[]>();
-
-        public Ship(List<int[]> shipPartsCoordinates)
-        {
-            for (int i = 0; i < shipPartsCoordinates.Count; i++)
-            {
-                setShipPartCoordinates(shipPartsCoordinates[i]);
-            }
-        }
-        void setShipPartCoordinates(int[] coordinates)
+        //public Ship(List<int[]> shipPartsCoordinates)
+        //{
+        //    for (int i = 0; i < shipPartsCoordinates.Count; i++)
+        //    {
+        //        setShipPartCoordinates(shipPartsCoordinates[i]);
+        //    }
+        //}
+        public void setShipPartCoordinates(int[] coordinates)
         {
             parts.Add(coordinates);
         }

@@ -13,24 +13,21 @@ namespace BattleshipGame
 {
     internal class Player
     {
-        Gameboard playerBoard;
+        Gameboard playerBoard = new Gameboard();
         List<Ship> playerShips = new List<Ship>();
 
-        public Player()
+        public Player(bool isFirstPlayerTurn)
         {
-            createShips();
-            playerBoard = new Gameboard(playerShips);
+            createShips(isFirstPlayerTurn);   
         }
-
-        public string showPlayerBoard(int a, int b, bool isItMyTurn)
+        public string getPlayerBoard(int a, int b, bool isItMyTurn)
         {
             return Char.ToString(playerBoard.showGameboardField(a, b, isItMyTurn));
         }
-
-        void createShips()
+        void createShips(bool isFirstPlayerTurn)
         {
             for (int i = 1; i <= 1; i++)
-            {
+            {                           
                 int n;
 
                 if (i > 6) { n = 1; }
@@ -40,12 +37,15 @@ namespace BattleshipGame
 
                 List<int[]> curShipPartsCoordinates = new List<int[]>();
 
+                playerShips.Add(new Ship());
+
                 for (int j = 0; j < n; j++)
                 {
+                    showPlayerBoard(isFirstPlayerTurn);
                     curShipPartsCoordinates.Add(takeCoordinatesFromUser(curShipPartsCoordinates));
-                }
-
-                playerShips.Add(new Ship(curShipPartsCoordinates));
+                    playerShips[i-1].setShipPartCoordinates(curShipPartsCoordinates[j]);
+                    playerBoard.setAllPlayingFields(playerShips);
+                }             
             }
         }
         int[] takeCoordinatesFromUser(List<int[]> curShipPartsCoordinates)
@@ -119,6 +119,36 @@ namespace BattleshipGame
             }
 
             return false;
+        }
+        void showPlayerBoard(bool isFirstPlayerTurn)
+        {
+            Console.Clear();
+            int playerNumber = isFirstPlayerTurn ? 1 : 2;
+            Console.WriteLine($"\n                 | Player {playerNumber} Turn |\n");
+            Console.WriteLine("\n                | Place your ships |");
+            Console.WriteLine("\n       0   1   2   3   4   5   6   7   8   9");
+            for (int i = 1; i <= 21; i++)
+            {
+                string row = "";
+                
+                row += i % 2 != 0 ? "     +" : $"   {Program.convertToRowCharacter(i / 2)} |";
+
+                for (int k = 0; k < 10; k++)
+                {
+                    string rowElement;
+                    if (i % 2 != 0)
+                    {
+                        rowElement = "---+";
+                    }                    
+                    else rowElement = $" {getPlayerBoard((i / 2) - 1, k, true)} |";
+                    row += rowElement;
+                }
+
+                row += "\t";
+                
+
+                Console.WriteLine(row);
+            }
         }
     }
 }
