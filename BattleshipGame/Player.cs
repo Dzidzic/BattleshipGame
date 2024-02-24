@@ -26,7 +26,7 @@ namespace BattleshipGame
         }
         void createShips(bool isFirstPlayerTurn)
         {
-            for (int i = 1; i <= 1; i++)
+            for (int i = 1; i <= 2; i++)
             {                           
                 int n;
 
@@ -52,54 +52,91 @@ namespace BattleshipGame
         {           
             int[] coordinates = new int[2];
             char[] characters;
-            
-            bool endThirdLoop = false;
+
+            bool endFourthLoop = false;
             do
             {
-                bool endSecondLoop = false;
+                bool endThirdLoop = false;
                 do
                 {
-                    bool endFirstLoop = false;
+                    bool endSecondLoop = false;
                     do
                     {
-                        Console.Write("Podaj koordynaty części statku: ");
-                        characters = Console.ReadLine().ToCharArray();
-
-                        if (characters.Length != 2)
+                        bool endFirstLoop = false;
+                        do
                         {
-                            Console.WriteLine("Error! Coordinates must consist of two characters! \n");
+                            Console.Write("Podaj koordynaty części statku: ");
+                            characters = Console.ReadLine().ToCharArray();
+
+                            if (characters.Length != 2)
+                            {
+                                Console.WriteLine("Error! Coordinates must consist of two characters! \n");
+                            }
+                            else endFirstLoop = true;
+
+                        } while (!endFirstLoop);
+
+                        if (!CheckIfCharactersAreCorrect(characters))
+                        {
+                            Console.WriteLine("Error! Wrong coordinates entered! \n");
                         }
-                        else endFirstLoop = true;
+                        else endSecondLoop = true;
 
-                    } while (!endFirstLoop);
+                    } while (!endSecondLoop);
 
-                    if (!CheckIfCharactersAreCorrect(characters))
+                    coordinates[0] = characters[0] - 65;
+                    coordinates[1] = characters[1] - 48;
+
+                    if (CheckIfFieldIsOccupied(coordinates))
                     {
-                        Console.WriteLine("Error! Wrong coordinates entered! \n");
+                        Console.WriteLine("Error! The given place is already occupied! \n");
                     }
-                    else endSecondLoop = true;
+                    else endThirdLoop = true;
 
-                } while (!endSecondLoop);
+                } while (!endThirdLoop);
 
-                coordinates[0] = characters[0] - 65;
-                coordinates[1] = characters[1] - 48;
-                
-                if(CheckIfFieldIsOccupied(coordinates, curShipPartsCoordinates))
+                if (CheckIfShipsAreTouching(coordinates, curShipPartsCoordinates))
                 {
-                    Console.WriteLine("Error! The given place is already occupied! \n");
-                }else endThirdLoop = true;
-
-            } while (!endThirdLoop);
+                    Console.WriteLine("Error! There is already a placed ship around the given coordinates! \n");
+                }
+                else endFourthLoop = true;
+            
+            } while (!endFourthLoop);
 
 
             return coordinates;
         }
-        bool CheckIfFieldIsOccupied(int[] coordinates, List<int[]> curShipPartsCoordinates)
+        bool CheckIfShipsAreTouching(int[] coordinates, List<int[]> curShipPartsCoordinates)
         {
-            for (int i = 0; i < curShipPartsCoordinates.Count; i++)
+            for(int i = -1 ; i <= 1; i++)
             {
-                if (curShipPartsCoordinates[i][0] == coordinates[0] && curShipPartsCoordinates[i][1] == coordinates[1]) return true;
-            }          
+                for (int j = -1; j <= 1; j++)
+                {                 
+                    if (coordinates[0]+j >= 0 && coordinates[0]+j <= 9 && coordinates[1]+i >= 0 && coordinates[1]+i <= 9)
+                    {
+                        int[] tempCoordinates = { coordinates[0] + j, coordinates[1] + i };
+
+                        if (curShipPartsCoordinates.Count == 0)
+                        {
+                            if (CheckIfFieldIsOccupied(tempCoordinates)) return true;
+                        }
+                        else
+                        {
+                            for (int k = 0; k < curShipPartsCoordinates.Count; k++)
+                            {
+                                if (curShipPartsCoordinates[k][0] != tempCoordinates[0] && curShipPartsCoordinates[k][1] != tempCoordinates[1])
+                                {
+                                    if (CheckIfFieldIsOccupied(tempCoordinates)) return true;
+                                }
+                            }
+                        }
+                    }             
+                }
+            }
+            return false;
+        }
+        bool CheckIfFieldIsOccupied(int[] coordinates)
+        {         
             for(int i=0; i < playerShips.Count; i++) 
             {
                 if(playerShips[i].compareCoordinates(coordinates)) return true;
@@ -109,7 +146,7 @@ namespace BattleshipGame
         }
         bool CheckIfCharactersAreCorrect(char[] characters)
         {
-            char[] correctCharacters = { 'A', 'B', 'C', 'D', 'F', 'G', 'H', 'I', 'J' };
+            char[] correctCharacters = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
 
             if (characters[1] < '0' || characters[1] > '9') return false;
 
