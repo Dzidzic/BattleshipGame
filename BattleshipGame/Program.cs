@@ -10,11 +10,90 @@ namespace BattleshipGame
     {
         static void Main(string[] args)
         {
-            bool isFirstPlayerTurn = true;
-            Player firstPlayer = new Player(isFirstPlayerTurn);
-            Player secondPlayer = new Player(!isFirstPlayerTurn);
 
-            ShowGameboard();
+            // Player 1 Places His Ships
+            bool isFirstPlayerTurn = true;
+            
+            Console.Clear();
+            Console.Write("\nPress <Enter> to continue...");
+            while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+            
+            Player firstPlayer = new Player(isFirstPlayerTurn);
+
+
+            // Player 2 Places His Ships
+            isFirstPlayerTurn = false;
+            
+            Console.Clear();
+            Console.Write("\nPress <Enter> to continue...");
+            while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }       
+            
+            Player secondPlayer = new Player(isFirstPlayerTurn);
+
+            // Game Loop
+            bool didFirstPlayerWon = true;
+            bool endOfGame = false;
+            do
+            {
+                // Player 1 Turn
+                isFirstPlayerTurn = true;
+                
+                Console.Clear();
+                Console.Write("\nPress <Enter> to continue...");
+                while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+                
+
+                ShowGameboard();
+                bool endPlayerAttack = false;
+                do
+                {
+                    endPlayerAttack = secondPlayer.enemyPlayerAttack();
+                    ShowGameboard();
+                    endOfGame = secondPlayer.checkIfShipsAreAlive();
+                    if (endOfGame) break;
+                        
+                } while(!endPlayerAttack);
+                
+                if (endOfGame)
+                {
+                    didFirstPlayerWon = true;
+                    break;
+                }
+
+
+                // Player 2 Turn
+                isFirstPlayerTurn = false;
+                
+                Console.Clear();
+                Console.Write("\nPress <Enter> to continue...");
+                while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+
+                ShowGameboard();
+                endPlayerAttack = false;
+                do
+                {
+                    endPlayerAttack = firstPlayer.enemyPlayerAttack();
+                    ShowGameboard();
+                    endOfGame = firstPlayer.checkIfShipsAreAlive();
+                    if (endOfGame) break;
+
+                } while (!endPlayerAttack);
+
+                if (endOfGame)
+                {
+                    didFirstPlayerWon = false;
+                    break;
+                }
+
+            } while(!endOfGame);
+
+
+            int winningPlayerNumeber = didFirstPlayerWon ? 1 : 2;
+            Console.WriteLine("\n\t\t\t\t\t +---------------+");
+            Console.WriteLine($"\t\t\t\t\t | PLAYER {winningPlayerNumeber} WINS |");
+            Console.WriteLine("\t\t\t\t\t +---------------+");
+
+
             Console.Write("\nPress <Enter> to exit...");
             while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
 

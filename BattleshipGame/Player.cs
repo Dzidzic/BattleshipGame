@@ -56,7 +56,7 @@ namespace BattleshipGame
         }
         void createShips(bool isFirstPlayerTurn)
         {
-            for (int i = 1; i <= 2; i++)
+            for (int i = 1; i <= 1; i++)
             {                           
                 int n;
 
@@ -77,6 +77,29 @@ namespace BattleshipGame
                     playerBoard.setAllPlayingFields(playerShips);
                 }             
             }
+        }
+        public bool checkIfShipsAreAlive()
+        {
+            if(playerShips.Count == 0) return true;
+            else return false;
+        }
+        public bool enemyPlayerAttack()
+        {
+            bool isThisHit;
+
+            int[] coordinates = takeCoordinatesFromUser();
+            isThisHit = playerBoard.setPlayingField(coordinates, playerShips, true);
+
+            if (isThisHit)
+            {
+                for (int i = 0; i < playerShips.Count; i++)
+                {
+                    playerShips[i].deleteShipPart(coordinates);
+                    if (playerShips[i].deleteShip()) playerShips.RemoveAt(i);
+                }
+            }
+
+            return !isThisHit;
         }
         int[] takeCoordinatesFromUser()
         {

@@ -24,7 +24,7 @@ namespace BattleshipGame
         //    }
         //}
 
-        public void setPlayingField(int[] coordinates, List<Ship> ships)
+        public bool setPlayingField(int[] coordinates, List<Ship> ships, bool isThisAttack)
         {
             bool isItShipField = false;
             for (int i = 0; i < ships.Count; i++)
@@ -38,9 +38,17 @@ namespace BattleshipGame
 
             if (isItShipField)
             {
-                playingFields[coordinates[0], coordinates[1]] = 'O';
+                if (isThisAttack) 
+                {
+                    playingFields[coordinates[0], coordinates[1]] = 'X';
+                    return true;
+                }
+                else playingFields[coordinates[0], coordinates[1]] = 'O';
             }
+            else if(isThisAttack) playingFields[coordinates[0], coordinates[1]] = '*';
             else playingFields[coordinates[0], coordinates[1]] = ' ';
+
+            return false;
         }
         public void setAllPlayingFields(List<Ship> ships)
         {
@@ -48,7 +56,7 @@ namespace BattleshipGame
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    setPlayingField(new int[] { i, j }, ships);
+                    setPlayingField(new int[] { i, j }, ships, false);
                 }
             }
         }
