@@ -72,16 +72,50 @@ namespace BattleshipGame
                 for (int j = 0; j < n; j++)
                 {
                     showPlayerBoard(isFirstPlayerTurn);
-                    curShipPartsCoordinates.Add(takeCoordinatesFromUser(curShipPartsCoordinates));
+                    curShipPartsCoordinates.Add(checkCorrectnessOfShipConstruction(curShipPartsCoordinates));
                     playerShips[i-1].setShipPartCoordinates(curShipPartsCoordinates[j]);
                     playerBoard.setAllPlayingFields(playerShips);
                 }             
             }
         }
-        int[] takeCoordinatesFromUser(List<int[]> curShipPartsCoordinates)
-        {           
+        int[] takeCoordinatesFromUser()
+        {
             int[] coordinates = new int[2];
             char[] characters;
+
+            bool endSecondLoop = false;
+            do
+            {
+                bool endFirstLoop = false;
+                do
+                {
+                    Console.Write("Podaj koordynaty części statku: ");
+                    characters = Console.ReadLine().ToCharArray();
+
+                    if (characters.Length != 2)
+                    {
+                        Console.WriteLine("Error! Coordinates must consist of two characters! \n");
+                    }
+                    else endFirstLoop = true;
+
+                } while (!endFirstLoop);
+
+                if (!CheckIfCharactersAreCorrect(characters))
+                {
+                    Console.WriteLine("Error! Wrong coordinates entered! \n");
+                }
+                else endSecondLoop = true;
+
+            } while (!endSecondLoop);
+
+            coordinates[0] = characters[0] - 65;
+            coordinates[1] = characters[1] - 48;
+
+            return coordinates;
+        }
+        int[] checkCorrectnessOfShipConstruction(List<int[]> curShipPartsCoordinates)
+        {
+            int[] coordinates;
 
             bool endFifthLoop = false;
             do
@@ -92,33 +126,7 @@ namespace BattleshipGame
                     bool endThirdLoop = false;
                     do
                     {
-                        bool endSecondLoop = false;
-                        do
-                        {
-                            bool endFirstLoop = false;
-                            do
-                            {
-                                Console.Write("Podaj koordynaty części statku: ");
-                                characters = Console.ReadLine().ToCharArray();
-
-                                if (characters.Length != 2)
-                                {
-                                    Console.WriteLine("Error! Coordinates must consist of two characters! \n");
-                                }
-                                else endFirstLoop = true;
-
-                            } while (!endFirstLoop);
-
-                            if (!CheckIfCharactersAreCorrect(characters))
-                            {
-                                Console.WriteLine("Error! Wrong coordinates entered! \n");
-                            }
-                            else endSecondLoop = true;
-
-                        } while (!endSecondLoop);
-
-                        coordinates[0] = characters[0] - 65;
-                        coordinates[1] = characters[1] - 48;
+                        coordinates = takeCoordinatesFromUser();
 
                         if (CheckIfFieldIsOccupied(coordinates))
                         {
@@ -152,6 +160,14 @@ namespace BattleshipGame
             if (curShipPartsCoordinates.Count == 1)
             {
                 if (coordinates[0] != curShipPartsCoordinates[0][0] && coordinates[1] != curShipPartsCoordinates[0][1]) return false;
+
+                for(int i = -1; i < 2; i+=2)
+                {
+                    if (coordinates[0] + i == curShipPartsCoordinates[0][0]) return true;
+                    if (coordinates[1] + i == curShipPartsCoordinates[0][1]) return true;
+                }
+
+                return false;
             }
             else if (curShipPartsCoordinates.Count >= 2)
             {
