@@ -15,6 +15,7 @@ namespace BattleshipGame
     {
         Gameboard playerBoard = new Gameboard();
         List<Ship> playerShips = new List<Ship>();
+        public List<string> enemyPlayerMoves = new List<string>();
 
         public Player(bool isFirstPlayerTurn)
         {
@@ -24,18 +25,21 @@ namespace BattleshipGame
         {
             return Char.ToString(playerBoard.showGameboardField(a, b, isItMyTurn));
         }
-        void showPlayerBoard(bool isFirstPlayerTurn)
+        public void showPlayerBoard(bool isFirstPlayerTurn, bool isThisShipPlacing)
         {
-            Console.Clear();
             int playerNumber = isFirstPlayerTurn ? 1 : 2;
-            Console.WriteLine($"\n                 | Player {playerNumber} Turn |\n");
-            Console.WriteLine("\n                | Place your ships |");
+            if(isThisShipPlacing) 
+            {
+                Console.Clear();
+                Console.WriteLine($"\n                 | Player {playerNumber} Turn |\n");
+                Console.WriteLine("\n                | Place your ships |");
+            }         
             Console.WriteLine("\n       0   1   2   3   4   5   6   7   8   9");
             for (int i = 1; i <= 21; i++)
             {
                 string row = "";
 
-                row += i % 2 != 0 ? "     +" : $"   {Program.convertToRowCharacter(i / 2)} |";
+                row += i % 2 != 0 ? "     +" : $"   {Program.ConvertToRowCharacter(i / 2)} |";
 
                 for (int k = 0; k < 10; k++)
                 {
@@ -71,7 +75,7 @@ namespace BattleshipGame
 
                 for (int j = 0; j < n; j++)
                 {
-                    showPlayerBoard(isFirstPlayerTurn);
+                    showPlayerBoard(isFirstPlayerTurn, true);
                     curShipPartsCoordinates.Add(checkCorrectnessOfShipConstruction(curShipPartsCoordinates));
                     playerShips[i-1].setShipPartCoordinates(curShipPartsCoordinates[j]);
                     playerBoard.setAllPlayingFields(playerShips);
@@ -84,7 +88,7 @@ namespace BattleshipGame
             else return false;
         }
         public bool enemyPlayerAttack()
-        {
+        {   
             bool isThisHit;
 
             int[] coordinates = takeCoordinatesFromUser();
@@ -98,6 +102,11 @@ namespace BattleshipGame
                     if (playerShips[i].deleteShip()) playerShips.RemoveAt(i);
                 }
             }
+
+            char chCoordinates = Convert.ToChar((coordinates[0] += 65));
+            string resultOfEnemyMove = $"{Convert.ToString(chCoordinates)}{Convert.ToString(coordinates[1])} | ";
+            resultOfEnemyMove += isThisHit ? "HIT" : "MISS";
+            enemyPlayerMoves.Add(resultOfEnemyMove);
 
             return !isThisHit;
         }
