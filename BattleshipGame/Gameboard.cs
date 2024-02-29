@@ -13,17 +13,6 @@ namespace BattleshipGame
 
         char[,] playingFields = new char[10, 10];
 
-        //public Gameboard(List<Ship> ships)
-        //{
-        //    for (int i = 0; i < 10; i++)
-        //    {
-        //        for (int j = 0; j < 10; j++)
-        //        {
-        //            setPlayingField(new int[] { i, j }, ships);
-        //        }
-        //    }
-        //}
-
         public bool setPlayingField(int[] coordinates, List<Ship> ships, bool isThisAttack)
         {
             bool isItShipField = false;

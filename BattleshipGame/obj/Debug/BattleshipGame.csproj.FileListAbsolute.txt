@@ -1,0 +1,21 @@
+C:\Users\Egzamin\Desktop\BattleshipGame-master\BattleshipGame\bin\Debug\BattleshipGame.exe.config
+C:\Users\Egzamin\Desktop\BattleshipGame-master\BattleshipGame\bin\Debug\BattleshipGame.exe
+C:\Users\Egzamin\Desktop\BattleshipGame-master\BattleshipGame\bin\Debug\BattleshipGame.pdb
+C:\Users\Egzamin\Desktop\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.csproj.AssemblyReference.cache
+C:\Users\Egzamin\Desktop\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.csproj.CoreCompileInputs.cache
+C:\Users\Egzamin\Desktop\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.exe
+C:\Users\Egzamin\Desktop\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.pdb
+E:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\bin\Debug\BattleshipGame.exe.config
+E:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\bin\Debug\BattleshipGame.exe
+E:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\bin\Debug\BattleshipGame.pdb
+E:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.csproj.AssemblyReference.cache
+E:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.csproj.CoreCompileInputs.cache
+E:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.exe
+E:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.pdb
+F:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\bin\Debug\BattleshipGame.exe.config
+F:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\bin\Debug\BattleshipGame.exe
+F:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\bin\Debug\BattleshipGame.pdb
+F:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.csproj.AssemblyReference.cache
+F:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.csproj.CoreCompileInputs.cache
+F:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.exe
+F:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.pdb
