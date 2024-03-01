@@ -12,6 +12,11 @@ namespace BattleshipGame
     internal class Ship
     {
         public List<int[]> parts = new List<int[]>();
+        int aliveParts;
+        public Ship(int partsQuantity)
+        {
+            this.aliveParts = partsQuantity;
+        }
         public void setShipPartCoordinates(int[] coordinates)
         {
             parts.Add(coordinates);
@@ -34,14 +39,27 @@ namespace BattleshipGame
             {
                 if (parts[i][0] == coordinates[0] && parts[i][1] == coordinates[1])
                 {
-                    parts.RemoveAt(i);
+                    aliveParts--;
                 }
             }
         }
         public bool deleteShip() 
         {
-            if (parts.Count == 0) return true;
+            if (aliveParts == 0) return true;
             else return false;
+        }
+        public List<int[]> getFieldsAroundShipPart(int i)
+        {
+            List<int[]> fieldsAroundShipPart = new List<int[]>();
+            for(int j = -1; j <= 1; j++)
+            {
+                for(int k = -1; k <=1; k++)
+                {
+                    int[] tempPart = { parts[i][0] + j, parts[i][1] + k };
+                    if (tempPart[0] >= 0 && tempPart[0] <= 9 && tempPart[1] >= 0 && tempPart[1] <= 9) fieldsAroundShipPart.Add(tempPart);                
+                }
+            }
+            return fieldsAroundShipPart;
         }
     }
 }

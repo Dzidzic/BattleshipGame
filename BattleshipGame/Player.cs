@@ -25,7 +25,7 @@ namespace BattleshipGame
         {
             return Char.ToString(playerBoard.showGameboardField(a, b, isItMyTurn));
         }
-        public void showPlayerBoard(bool isFirstPlayerTurn, bool isThisShipPlacing)
+        public void showPlayerBoard(bool isFirstPlayerTurn, bool isThisShipPlacing, int shipLenght)
         {
             int playerNumber = isFirstPlayerTurn ? 1 : 2;
             if(isThisShipPlacing) 
@@ -33,6 +33,7 @@ namespace BattleshipGame
                 Console.Clear();
                 Console.WriteLine($"\n                 | Player {playerNumber} Turn |\n");
                 Console.WriteLine("\n                | Place your ships |");
+                Console.WriteLine($"\n Now placing: {shipLenght} mast ship");
             }         
             Console.WriteLine("\n       0   1   2   3   4   5   6   7   8   9");
             for (int i = 1; i <= 21; i++)
@@ -60,7 +61,7 @@ namespace BattleshipGame
         }
         void createShips(bool isFirstPlayerTurn)
         {
-            for (int i = 1; i <= 1; i++)
+            for (int i = 1; i <= 2; i++)
             {                           
                 int n;
 
@@ -71,11 +72,11 @@ namespace BattleshipGame
 
                 List<int[]> curShipPartsCoordinates = new List<int[]>();
 
-                playerShips.Add(new Ship());
+                playerShips.Add(new Ship(n));
 
                 for (int j = 0; j < n; j++)
                 {
-                    showPlayerBoard(isFirstPlayerTurn, true);
+                    showPlayerBoard(isFirstPlayerTurn, true, n);
                     curShipPartsCoordinates.Add(checkCorrectnessOfShipConstruction(curShipPartsCoordinates));
                     playerShips[i-1].setShipPartCoordinates(curShipPartsCoordinates[j]);
                     playerBoard.setAllPlayingFields(playerShips);
@@ -99,7 +100,18 @@ namespace BattleshipGame
                 for (int i = 0; i < playerShips.Count; i++)
                 {
                     playerShips[i].deleteShipPart(coordinates);
-                    if (playerShips[i].deleteShip()) playerShips.RemoveAt(i);
+                    if (playerShips[i].deleteShip())
+                    {
+                        for(int j = 0;j < playerShips[i].parts.Count; j++)
+                        {
+                            List<int[]> fieldsAroundShipPart = playerShips[i].getFieldsAroundShipPart(j);
+                            for( int k = 0; k < fieldsAroundShipPart.Count; k++)
+                            {                              
+                                playerBoard.setPlayingField(fieldsAroundShipPart[k], playerShips, true);                                
+                            }
+                        }
+                        playerShips.RemoveAt(i);
+                    }
                 }
             }
 
@@ -121,7 +133,7 @@ namespace BattleshipGame
                 bool endFirstLoop = false;
                 do
                 {
-                    Console.Write("Podaj koordynaty części statku: ");
+                    Console.Write("Provide the coordinates of the ship part: ");
                     characters = Console.ReadLine().ToCharArray();
 
                     if (characters.Length != 2)

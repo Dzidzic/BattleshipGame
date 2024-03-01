@@ -32,7 +32,7 @@ namespace BattleshipGame
                     playingFields[coordinates[0], coordinates[1]] = 'X';
                     return true;
                 }
-                else playingFields[coordinates[0], coordinates[1]] = 'O';
+                else playingFields[coordinates[0], coordinates[1]] = '#';
             }
             else if(isThisAttack) playingFields[coordinates[0], coordinates[1]] = '*';
             else playingFields[coordinates[0], coordinates[1]] = ' ';
@@ -51,7 +51,7 @@ namespace BattleshipGame
         }
         public char showGameboardField(int a, int b, bool isItMyTurn)
         {
-            if (!isItMyTurn && playingFields[a, b] == 'O')
+            if (!isItMyTurn && playingFields[a, b] == '#')
             {
                 return ' ';
             }

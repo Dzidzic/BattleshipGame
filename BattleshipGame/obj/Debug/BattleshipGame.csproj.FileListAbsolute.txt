@@ -19,3 +19,10 @@ F:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\D
 F:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.csproj.CoreCompileInputs.cache
 F:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.exe
 F:\Przedmioty-Zawodowe\OOP\Klasa 2\CS\BattleshipGame-master\BattleshipGame\obj\Debug\BattleshipGame.pdb
+C:\Cs-Projects\BattleshipGame\BattleshipGame\bin\Debug\BattleshipGame.exe.config
+C:\Cs-Projects\BattleshipGame\BattleshipGame\bin\Debug\BattleshipGame.exe
+C:\Cs-Projects\BattleshipGame\BattleshipGame\bin\Debug\BattleshipGame.pdb
+C:\Cs-Projects\BattleshipGame\BattleshipGame\obj\Debug\BattleshipGame.csproj.AssemblyReference.cache
+C:\Cs-Projects\BattleshipGame\BattleshipGame\obj\Debug\BattleshipGame.csproj.CoreCompileInputs.cache
+C:\Cs-Projects\BattleshipGame\BattleshipGame\obj\Debug\BattleshipGame.exe
+C:\Cs-Projects\BattleshipGame\BattleshipGame\obj\Debug\BattleshipGame.pdb
