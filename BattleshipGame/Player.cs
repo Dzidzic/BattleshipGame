@@ -92,7 +92,7 @@ namespace BattleshipGame
         {   
             bool isThisHit;
 
-            int[] coordinates = takeCoordinatesFromUser();
+            int[] coordinates = ckeckCorrectnessOfEnemyAttack();
             isThisHit = playerBoard.setPlayingField(coordinates, playerShips, true);
 
             if (isThisHit)
@@ -157,17 +157,34 @@ namespace BattleshipGame
 
             return coordinates;
         }
+        int[] ckeckCorrectnessOfEnemyAttack()
+        {
+            int[] coordinates;
+
+            bool endFirstLoop = false;
+            do
+            {
+                coordinates = takeCoordinatesFromUser();
+
+                if(playerBoard.checkIfPlayingFieldIsOccupied(coordinates))
+                {
+                    Console.WriteLine("Error! You can't hit the same place twice! \n");
+                }else endFirstLoop = true;
+            } while (!endFirstLoop);
+
+            return coordinates;
+        }
         int[] checkCorrectnessOfShipConstruction(List<int[]> curShipPartsCoordinates)
         {
             int[] coordinates;
 
-            bool endFifthLoop = false;
+            bool endThirdLoop = false;
             do
             {
-                bool endFourthLoop = false;
+                bool endSecondLoop = false;
                 do
                 {
-                    bool endThirdLoop = false;
+                    bool endFirstLoop = false;
                     do
                     {
                         coordinates = takeCoordinatesFromUser();
@@ -176,25 +193,25 @@ namespace BattleshipGame
                         {
                             Console.WriteLine("Error! The given place is already occupied! \n");
                         }
-                        else endThirdLoop = true;
+                        else endFirstLoop = true;
 
-                    } while (!endThirdLoop);
+                    } while (!endFirstLoop);
                 
                     if(!CkeckIfShipConnectionIsCorrect(coordinates, curShipPartsCoordinates))
                     {
                         Console.WriteLine("Error! The given parts of the ship do not touch each other! \n");
                     }
-                    else endFourthLoop = true;
+                    else endSecondLoop = true;
                 
-                } while (!endFourthLoop);
+                } while (!endSecondLoop);
 
                 if (CheckIfShipsAreTouching(coordinates, curShipPartsCoordinates))
                 {
                     Console.WriteLine("Error! There is already a placed ship around the given coordinates! \n");
                 }
-                else endFifthLoop = true;
+                else endThirdLoop = true;
             
-            } while (!endFifthLoop);
+            } while (!endThirdLoop);
 
 
             return coordinates;

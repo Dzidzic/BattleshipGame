@@ -39,6 +39,11 @@ namespace BattleshipGame
 
             return false;
         }
+        public bool checkIfPlayingFieldIsOccupied(int[] coordinates)
+        {
+            if (playingFields[coordinates[0], coordinates[1]] == 'X' || playingFields[coordinates[0], coordinates[1]] == '*') return true;
+            else return false;
+        }
         public void setAllPlayingFields(List<Ship> ships)
         {
             for (int i = 0; i < 10; i++)
