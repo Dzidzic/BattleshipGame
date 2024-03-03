@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BattleshipGame
@@ -10,17 +11,35 @@ namespace BattleshipGame
     {
         static void Main(string[] args)
         {
+            bool isFirstPlayerTurn;
+            bool endLoop = false;
+            int firstPlayerWins = 0;
+            int secondPlayerWins = 0;
             // ------------------------------------------------------------------------------------
             // ----------------------------| Game info and inscrution |----------------------------
             // ------------------------------------------------------------------------------------
-            Console.Clear();
-            Console.Write("\n\t Tu bedzie instrukcja gry");
-            Console.Write("\n\nPress <Enter> to continue...");
-            while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
-            bool isFirstPlayerTurn;
 
-            int firstPlayerWins = 0;
-            int secondPlayerWins = 0;
+            Console.Clear();
+            Console.Write("\n\t Tu bedzie instrukcja gry");    
+
+            Console.WriteLine("\n\t\t\t\tSelect a game mode");
+
+
+            bool isItPVP = true;
+            do
+            {
+                if(isItPVP) Console.WriteLine("\n\t\t   > Player vs Player < |   Player vs Computer  ");
+                else Console.WriteLine("\n\t\t     Player vs Player   | > Player vs Computer <");
+
+                ConsoleKey key = Console.ReadKey(true).Key;
+
+                if ((key == ConsoleKey.RightArrow || key == ConsoleKey.D) && isItPVP) isItPVP = false;
+                else if ((key == ConsoleKey.LeftArrow || key == ConsoleKey.A) && !isItPVP) isItPVP = true;
+                else if (key == ConsoleKey.Enter) endLoop = true;
+
+                Console.SetCursorPosition(0, Console.CursorTop - 2);
+            } while (!endLoop);
+
             bool programShutdown = false;
             do
             {
@@ -34,7 +53,7 @@ namespace BattleshipGame
                 Console.Write("\n\nPress <Enter> to continue...");
                 while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
 
-                Player firstPlayer = new Player(isFirstPlayerTurn);
+                Player firstPlayer = new Player(isFirstPlayerTurn, false);
 
 
                 // -------------------------------------------------------------------------------------
@@ -47,7 +66,7 @@ namespace BattleshipGame
                 Console.Write("\n\nPress <Enter> to continue...");
                 while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
 
-                Player secondPlayer = new Player(isFirstPlayerTurn);
+                Player secondPlayer = new Player(isFirstPlayerTurn, true);
 
                 // --------------------------------------------------------------------
                 // ----------------------------| Gameloop |----------------------------
@@ -73,7 +92,7 @@ namespace BattleshipGame
 
                     if (showEnemyMoves)
                     {
-                        Console.Write("\n Moves made by Player 2:");
+                        Console.Write("\n Moves made by Player 2: \n");
                         for (int i = 0; i < firstPlayer.enemyPlayerMoves.Count; i++)
                         {
                             Console.WriteLine("- " + firstPlayer.enemyPlayerMoves[i]);
@@ -85,15 +104,16 @@ namespace BattleshipGame
                     bool endPlayerAttack = false;
                     do
                     {
-                        endPlayerAttack = secondPlayer.enemyPlayerAttack();
+                        endPlayerAttack = secondPlayer.EnemyPlayerAttack(false);
                         Console.Clear();
                         Console.WriteLine("\n                                         | Player 1 Turn |\n");
                         ShowGameboard();
-                        endOfGame = secondPlayer.checkIfShipsAreAlive();
+                        endOfGame = secondPlayer.CheckIfShipsAreAlive();
                         if (endOfGame) break;
 
                         string messageForEnemyMove = !endPlayerAttack ? "HIT" : "MISS";
                         Console.WriteLine($"\n Thats {messageForEnemyMove} !\n");
+
                     } while (!endPlayerAttack);
 
                     if (endOfGame)
@@ -129,15 +149,16 @@ namespace BattleshipGame
 
                     do
                     {
-                        endPlayerAttack = firstPlayer.enemyPlayerAttack();
+                        endPlayerAttack = firstPlayer.EnemyPlayerAttack(true);
                         Console.Clear();
                         Console.WriteLine("\n                                         | Player 2 Turn |\n");
                         ShowGameboard();
-                        endOfGame = firstPlayer.checkIfShipsAreAlive();
+                        endOfGame = firstPlayer.CheckIfShipsAreAlive();
                         if (endOfGame) break;
 
                         string messageForEnemyMove = !endPlayerAttack ? "HIT" : "MISS";
                         Console.WriteLine($"\n Thats {messageForEnemyMove} !\n");
+                      
                     } while (!endPlayerAttack);
 
                     if (endOfGame)
@@ -167,7 +188,7 @@ namespace BattleshipGame
                 Console.WriteLine($"\n\n\t\t         Total Player 1 Wins | {firstPlayerWins} : {secondPlayerWins} | Total Player 2 Wins      ");
 
 
-                bool endLoop = false;
+                endLoop = false;
                 bool rematch = true;
                 do
                 {
@@ -176,8 +197,8 @@ namespace BattleshipGame
                     
                     ConsoleKey key = Console.ReadKey(true).Key;
 
-                    if (key == ConsoleKey.RightArrow && rematch) rematch = false;
-                    else if (key == ConsoleKey.LeftArrow && !rematch) rematch = true;
+                    if ((key == ConsoleKey.RightArrow || key == ConsoleKey.D) && rematch) rematch = false;
+                    else if ((key == ConsoleKey.LeftArrow || key == ConsoleKey.A) && !rematch) rematch = true;
                     else if (key == ConsoleKey.Enter) endLoop = true;
 
                     Console.SetCursorPosition(0, Console.CursorTop - 2);
@@ -197,22 +218,33 @@ namespace BattleshipGame
                         string row = "";
                         for (int j = 0; j < 2; j++)
                         {
-
-                            row += i % 2 != 0 ? "     +" : $"   {ConvertToRowCharacter(i / 2)} |";
+                            if (i == 1 || i == 21) row += "     +";
+                            else row += i % 2 != 0 ? "     |" : $"   {Program.ConvertToRowCharacter(i / 2)} |";
 
                             for (int k = 0; k < 10; k++)
                             {
                                 string rowElement;
                                 if (i % 2 != 0)
                                 {
-                                    rowElement = "---+";
+                                    if(i == 1 || i == 21) rowElement = "---";
+                                    else rowElement = "   ";
                                 }
                                 else if (j == 1 && isFirstPlayerTurn || j == 0 && !isFirstPlayerTurn)
                                 {
-                                    rowElement = $" {firstPlayer.getPlayerBoard((i / 2) - 1, k, isFirstPlayerTurn ? true : false)} |";
+                                    rowElement = $" {firstPlayer.GetPlayerBoard((i / 2) - 1, k, isFirstPlayerTurn ? true : false)} ";
                                 }
-                                else rowElement = $" {secondPlayer.getPlayerBoard((i / 2) - 1, k, !isFirstPlayerTurn ? true : false)} |";
+                                else rowElement = $" {secondPlayer.GetPlayerBoard((i / 2) - 1, k, !isFirstPlayerTurn ? true : false)} ";
                                 row += rowElement;
+                                if (i != 1 && i != 21)
+                                {
+                                    if (k == 9) row += "|";
+                                    else row += " ";
+                                }
+                                else
+                                {
+                                    if (k == 9) row += "+";
+                                    else row += "-";
+                                }
                             }
 
                             row += "\t";
@@ -223,7 +255,6 @@ namespace BattleshipGame
                 }
             } while (!programShutdown);
         }
-
         public static string ConvertToRowCharacter(int characterNumber)
         {
             switch (characterNumber)

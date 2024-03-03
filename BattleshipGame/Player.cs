@@ -13,19 +13,20 @@ namespace BattleshipGame
 {
     internal class Player
     {
+        Computer computerMoves = new Computer();
         Gameboard playerBoard = new Gameboard();
         List<Ship> playerShips = new List<Ship>();
         public List<string> enemyPlayerMoves = new List<string>();
 
-        public Player(bool isFirstPlayerTurn)
+        public Player(bool isFirstPlayerTurn, bool isThisComputer)
         {
-            createShips(isFirstPlayerTurn);   
+            CreateShips(isFirstPlayerTurn, isThisComputer);   
         }
-        public string getPlayerBoard(int a, int b, bool isItMyTurn)
+        public string GetPlayerBoard(int a, int b, bool isItMyTurn)
         {
-            return Char.ToString(playerBoard.showGameboardField(a, b, isItMyTurn));
+            return Char.ToString(playerBoard.ShowGameboardField(a, b, isItMyTurn));
         }
-        public void showPlayerBoard(bool isFirstPlayerTurn, bool isThisShipPlacing, int shipLenght)
+        public void ShowPlayerBoard(bool isFirstPlayerTurn, bool isThisShipPlacing, int shipLenght)
         {
             int playerNumber = isFirstPlayerTurn ? 1 : 2;
             if(isThisShipPlacing) 
@@ -40,17 +41,30 @@ namespace BattleshipGame
             {
                 string row = "";
 
-                row += i % 2 != 0 ? "     +" : $"   {Program.ConvertToRowCharacter(i / 2)} |";
+                if (i == 1 || i == 21) row += "     +";
+                else row += i % 2 != 0 ? "     |" : $"   {Program.ConvertToRowCharacter(i / 2)} |";
 
                 for (int k = 0; k < 10; k++)
                 {
                     string rowElement;
                     if (i % 2 != 0)
                     {
-                        rowElement = "---+";
+                        if (i == 1 || i == 21) rowElement = "---";
+                        else rowElement = "   ";
                     }
-                    else rowElement = $" {getPlayerBoard((i / 2) - 1, k, true)} |";
+                    else rowElement = $" {GetPlayerBoard((i / 2) - 1, k, true)} ";
                     row += rowElement;
+                    if (i != 1 && i != 21)
+                    {
+                        if (k == 9) row += "|";
+                        else row += " ";
+                    }
+                    else
+                    {
+                        if (k == 9) row += "+";
+                        else row += "-";
+                    }
+
                 }
 
                 row += "\t";
@@ -59,9 +73,9 @@ namespace BattleshipGame
                 Console.WriteLine(row);
             }
         }
-        void createShips(bool isFirstPlayerTurn)
+        void CreateShips(bool isFirstPlayerTurn, bool isThisComputer)
         {
-            for (int i = 1; i <= 2; i++)
+            for (int i = 1; i <= 10; i++)
             {                           
                 int n;
 
@@ -74,40 +88,84 @@ namespace BattleshipGame
 
                 playerShips.Add(new Ship(n));
 
-                for (int j = 0; j < n; j++)
+                playerBoard.SetAllPlayingFields(playerShips);
+
+                if (isThisComputer)
                 {
-                    showPlayerBoard(isFirstPlayerTurn, true, n);
-                    curShipPartsCoordinates.Add(checkCorrectnessOfShipConstruction(curShipPartsCoordinates));
-                    playerShips[i-1].setShipPartCoordinates(curShipPartsCoordinates[j]);
-                    playerBoard.setAllPlayingFields(playerShips);
-                }             
+                    bool isShipPlaced = false;
+                    int h = 0;
+                    do
+                    {
+                        List<int[]> tempShip = computerMoves.CreateShip(n);
+                        for (int j = 0; j < n; j++)
+                        {
+                            curShipPartsCoordinates.Add(CheckCorrectnessOfShipConstruction(curShipPartsCoordinates, tempShip[j], true));
+                            if (curShipPartsCoordinates[j][0] == -1) break;
+                            playerShips[i - 1].SetShipPartCoordinates(curShipPartsCoordinates[j]);
+                            playerBoard.SetAllPlayingFields(playerShips);
+                            if (j == n - 1) isShipPlaced = true;
+                        }
+                        if (isShipPlaced) break;
+                    } while (h++ < 15);
+
+                    if (!isShipPlaced)
+                    {
+                        playerShips.Clear();
+                        i = 0;
+                    }
+                }
+                else
+                {
+                    int[] placeHolder = new int[2];
+                    for (int j = 0; j < n; j++)
+                    {
+                        ShowPlayerBoard(isFirstPlayerTurn, true, n);
+                        curShipPartsCoordinates.Add(CheckCorrectnessOfShipConstruction(curShipPartsCoordinates, placeHolder, false));
+                        playerShips[i - 1].SetShipPartCoordinates(curShipPartsCoordinates[j]);
+                        playerBoard.SetAllPlayingFields(playerShips);
+                    }
+                }
             }
         }
-        public bool checkIfShipsAreAlive()
+        public bool CheckIfShipsAreAlive()
         {
             if(playerShips.Count == 0) return true;
             else return false;
         }
-        public bool enemyPlayerAttack()
+        public bool EnemyPlayerAttack(bool isCopmuterAttacking)
         {   
             bool isThisHit;
 
-            int[] coordinates = ckeckCorrectnessOfEnemyAttack();
-            isThisHit = playerBoard.setPlayingField(coordinates, playerShips, true);
+            int[] coordinates = CheckCorrectnessOfEnemyAttack(isCopmuterAttacking);          
+
+            isThisHit = playerBoard.SetPlayingField(coordinates, playerShips, true);
 
             if (isThisHit)
             {
+                computerMoves.curUnderFireShipParts.Add(coordinates);
+                
                 for (int i = 0; i < playerShips.Count; i++)
                 {
-                    playerShips[i].deleteShipPart(coordinates);
-                    if (playerShips[i].deleteShip())
+                    playerShips[i].DeleteShipPart(coordinates);
+                    if (playerShips[i].DeleteShip())
                     {
-                        for(int j = 0;j < playerShips[i].parts.Count; j++)
+                        computerMoves.curUnderFireShipParts.Clear();
+                        for (int j = 0; j < 4; j++)
                         {
-                            List<int[]> fieldsAroundShipPart = playerShips[i].getFieldsAroundShipPart(j);
-                            for( int k = 0; k < fieldsAroundShipPart.Count; k++)
-                            {                              
-                                playerBoard.setPlayingField(fieldsAroundShipPart[k], playerShips, true);                                
+                            computerMoves.usedDirectionsFor4Choices[j] = false;
+                        }
+                        for (int j = 0; j < 2; j++)
+                        {
+                            computerMoves.usedDirectionsFor2Choices[j] = false;
+                        }
+          
+
+                        for (int j = 0; j < playerShips[i].parts.Count; j++)
+                        {
+                            List<int[]> fieldsAroundShipPart = playerShips[i].GetFieldsAroundShipPart(j);
+                            for (int k = 0; k < fieldsAroundShipPart.Count; k++)
+                            {
+                                playerBoard.SetPlayingField(fieldsAroundShipPart[k], playerShips, true);
                             }
                         }
                         playerShips.RemoveAt(i);
@@ -115,14 +173,14 @@ namespace BattleshipGame
                 }
             }
 
-            char chCoordinates = Convert.ToChar((coordinates[0] += 65));
+            char chCoordinates = Convert.ToChar((coordinates[0] + 65));
             string resultOfEnemyMove = $"{Convert.ToString(chCoordinates)}{Convert.ToString(coordinates[1])} | ";
             resultOfEnemyMove += isThisHit ? "HIT" : "MISS";
             enemyPlayerMoves.Add(resultOfEnemyMove);
 
             return !isThisHit;
         }
-        int[] takeCoordinatesFromUser()
+        int[] TakeCoordinatesFromUser()
         {
             int[] coordinates = new int[2];
             char[] characters;
@@ -157,24 +215,26 @@ namespace BattleshipGame
 
             return coordinates;
         }
-        int[] ckeckCorrectnessOfEnemyAttack()
+        int[] CheckCorrectnessOfEnemyAttack(bool isCopmuterAttacking)
         {
-            int[] coordinates;
+            int[] coordinates = new int[2];
 
             bool endFirstLoop = false;
             do
             {
-                coordinates = takeCoordinatesFromUser();
+                coordinates = isCopmuterAttacking ? computerMoves.MakeMove() : TakeCoordinatesFromUser();
 
-                if(playerBoard.checkIfPlayingFieldIsOccupied(coordinates))
+                if (playerBoard.CheckIfPlayingFieldIsOccupied(coordinates))
                 {
                     Console.WriteLine("Error! You can't hit the same place twice! \n");
-                }else endFirstLoop = true;
+                }
+                else endFirstLoop = true;
+
             } while (!endFirstLoop);
 
             return coordinates;
         }
-        int[] checkCorrectnessOfShipConstruction(List<int[]> curShipPartsCoordinates)
+        int[] CheckCorrectnessOfShipConstruction(List<int[]> curShipPartsCoordinates, int[] tempShipPartCoordinates, bool isThisComputer)
         {
             int[] coordinates;
 
@@ -187,18 +247,28 @@ namespace BattleshipGame
                     bool endFirstLoop = false;
                     do
                     {
-                        coordinates = takeCoordinatesFromUser();
+                        coordinates = isThisComputer ? tempShipPartCoordinates : TakeCoordinatesFromUser();
 
                         if (CheckIfFieldIsOccupied(coordinates))
                         {
+                            if(isThisComputer)
+                            {
+                                coordinates[0] = -1;
+                                return coordinates;
+                            }
                             Console.WriteLine("Error! The given place is already occupied! \n");
                         }
                         else endFirstLoop = true;
 
                     } while (!endFirstLoop);
                 
-                    if(!CkeckIfShipConnectionIsCorrect(coordinates, curShipPartsCoordinates))
+                    if(!CheckIfShipConnectionIsCorrect(coordinates, curShipPartsCoordinates))
                     {
+                        if (isThisComputer)
+                        {
+                            coordinates[0] = -1;
+                            return coordinates;
+                        }
                         Console.WriteLine("Error! The given parts of the ship do not touch each other! \n");
                     }
                     else endSecondLoop = true;
@@ -207,6 +277,11 @@ namespace BattleshipGame
 
                 if (CheckIfShipsAreTouching(coordinates, curShipPartsCoordinates))
                 {
+                    if (isThisComputer)
+                    {
+                        coordinates[0] = -1;
+                        return coordinates;
+                    }
                     Console.WriteLine("Error! There is already a placed ship around the given coordinates! \n");
                 }
                 else endThirdLoop = true;
@@ -216,7 +291,7 @@ namespace BattleshipGame
 
             return coordinates;
         }
-        bool CkeckIfShipConnectionIsCorrect(int[] coordinates, List<int[]> curShipPartsCoordinates)
+        bool CheckIfShipConnectionIsCorrect(int[] coordinates, List<int[]> curShipPartsCoordinates)
         {
             if (curShipPartsCoordinates.Count == 1)
             {
@@ -285,7 +360,7 @@ namespace BattleshipGame
         {         
             for(int i=0; i < playerShips.Count; i++) 
             {
-                if(playerShips[i].compareCoordinates(coordinates)) return true;
+                if(playerShips[i].CompareCoordinates(coordinates)) return true;
             }
 
             return false;

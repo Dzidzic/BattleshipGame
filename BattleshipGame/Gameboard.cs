@@ -12,13 +12,12 @@ namespace BattleshipGame
     {
 
         char[,] playingFields = new char[10, 10];
-
-        public bool setPlayingField(int[] coordinates, List<Ship> ships, bool isThisAttack)
+        public bool SetPlayingField(int[] coordinates, List<Ship> ships, bool isThisAttack)
         {
             bool isItShipField = false;
             for (int i = 0; i < ships.Count; i++)
             {
-                if (ships[i].compareCoordinates(coordinates))
+                if (ships[i].CompareCoordinates(coordinates))
                 {
                     isItShipField = true;
                     break;
@@ -27,38 +26,38 @@ namespace BattleshipGame
 
             if (isItShipField)
             {
-                if (isThisAttack) 
+                if (isThisAttack)
                 {
-                    playingFields[coordinates[0], coordinates[1]] = 'X';
+                    playingFields[coordinates[0], coordinates[1]] = '@';
                     return true;
                 }
-                else playingFields[coordinates[0], coordinates[1]] = '#';
+                else playingFields[coordinates[0], coordinates[1]] = 'O';
             }
-            else if(isThisAttack) playingFields[coordinates[0], coordinates[1]] = '*';
-            else playingFields[coordinates[0], coordinates[1]] = ' ';
+            else if(isThisAttack) playingFields[coordinates[0], coordinates[1]] = 'X';
+            else playingFields[coordinates[0], coordinates[1]] = '-';
 
             return false;
         }
-        public bool checkIfPlayingFieldIsOccupied(int[] coordinates)
+        public bool CheckIfPlayingFieldIsOccupied(int[] coordinates)
         {
-            if (playingFields[coordinates[0], coordinates[1]] == 'X' || playingFields[coordinates[0], coordinates[1]] == '*') return true;
+            if (playingFields[coordinates[0], coordinates[1]] == '@' || playingFields[coordinates[0], coordinates[1]] == 'X') return true;
             else return false;
         }
-        public void setAllPlayingFields(List<Ship> ships)
+        public void SetAllPlayingFields(List<Ship> ships)
         {
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    setPlayingField(new int[] { i, j }, ships, false);
+                    SetPlayingField(new int[] { i, j }, ships, false);
                 }
             }
         }
-        public char showGameboardField(int a, int b, bool isItMyTurn)
+        public char ShowGameboardField(int a, int b, bool isItMyTurn)
         {
-            if (!isItMyTurn && playingFields[a, b] == '#')
+            if (!isItMyTurn && playingFields[a, b] == 'O')
             {
-                return ' ';
+                return '-';
             }
 
             return playingFields[a, b];
