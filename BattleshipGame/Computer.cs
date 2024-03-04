@@ -11,13 +11,12 @@ namespace BattleshipGame
     internal class Computer
     {
         Random rnd = new Random();
-        string difficulty = "Easy";
         
         int shipDirection;
         public List<int[]> curUnderFireShipParts = new List<int[]>();  
         public bool[] usedDirectionsFor4Choices = { false, false, false, false };
         public bool[] usedDirectionsFor2Choices = { false, false };
-        public int[] MakeMove()
+        public int[] MakeMove(string difficulty)
         {            
             switch(difficulty)
             {

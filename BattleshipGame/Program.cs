@@ -12,37 +12,92 @@ namespace BattleshipGame
         static void Main(string[] args)
         {
             bool isFirstPlayerTurn;
+            bool isSecondPlayerComputer = false;
             bool endLoop = false;
             int firstPlayerWins = 0;
             int secondPlayerWins = 0;
-            // ------------------------------------------------------------------------------------
-            // ----------------------------| Game info and inscrution |----------------------------
-            // ------------------------------------------------------------------------------------
-
-            Console.Clear();
-            Console.Write("\n\t Tu bedzie instrukcja gry");    
-
-            Console.WriteLine("\n\t\t\t\tSelect a game mode");
-
-
-            bool isItPVP = true;
-            do
-            {
-                if(isItPVP) Console.WriteLine("\n\t\t   > Player vs Player < |   Player vs Computer  ");
-                else Console.WriteLine("\n\t\t     Player vs Player   | > Player vs Computer <");
-
-                ConsoleKey key = Console.ReadKey(true).Key;
-
-                if ((key == ConsoleKey.RightArrow || key == ConsoleKey.D) && isItPVP) isItPVP = false;
-                else if ((key == ConsoleKey.LeftArrow || key == ConsoleKey.A) && !isItPVP) isItPVP = true;
-                else if (key == ConsoleKey.Enter) endLoop = true;
-
-                Console.SetCursorPosition(0, Console.CursorTop - 2);
-            } while (!endLoop);
-
             bool programShutdown = false;
             do
             {
+                // ------------------------------------------------------------------------------------
+                // ----------------------------| Game info and inscrution |----------------------------
+                // ------------------------------------------------------------------------------------
+
+                Console.Clear();
+                Console.WriteLine("\n\t\t\t    Tu bedzie instrukcja gry");
+
+                Console.WriteLine("\n\n\n\t\t _______________________________________________ ");
+                Console.WriteLine("\t\t|                                               |");
+                Console.WriteLine("\t\t|\t        Select game mode   \t\t|");
+                Console.WriteLine("\t\t|                                               |");
+                Console.WriteLine("\t\t|                                               |");
+
+                endLoop = false;
+                bool isItPVP = true;
+                do
+                {
+                    if (!isItPVP)
+                    {
+                        Console.WriteLine("\t\t|   Player vs Player   |   Player vs Computer   |");
+                        Console.WriteLine("\t\t|                        ---------------------- |");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\t\t|   Player vs Player   |   Player vs Computer   |");
+                        Console.WriteLine("\t\t|  ------------------                           |");
+                    }
+                    Console.WriteLine("\t\t|_______________________________________________|");
+
+                    ConsoleKey key = Console.ReadKey(true).Key;
+
+                    if ((key == ConsoleKey.RightArrow || key == ConsoleKey.D) && isItPVP) isItPVP = false;
+                    else if ((key == ConsoleKey.LeftArrow || key == ConsoleKey.A) && !isItPVP) isItPVP = true;
+                    else if (key == ConsoleKey.Enter) endLoop = true;
+
+                    Console.SetCursorPosition(0, Console.CursorTop - 3);
+                } while (!endLoop);
+
+                // --------------------------------------------------------------------------------------------
+                // ----------------------------| Interface for game with Computer |----------------------------
+                // --------------------------------------------------------------------------------------------
+
+                string computerDifficulty = "Random";
+                if (!isItPVP)
+                {
+                    isSecondPlayerComputer = true;
+
+                    Console.Clear();
+                    Console.WriteLine("\n\n\t\t         _____________________________ ");
+                    Console.WriteLine("\t\t        |                             |");
+                    Console.WriteLine("\t\t        |      Choose difficulty      |");
+                    Console.WriteLine("\t\t        |                             |");
+                    Console.WriteLine("\t\t        |                             |");
+                    endLoop = false;
+                    do
+                    {
+                        if (computerDifficulty == "Random")
+                        {
+                            Console.WriteLine("\t\t        |      Random   |   Easy      |");
+                            Console.WriteLine("\t\t        |    ----------               |");
+                        }
+                        else
+                        {
+                            Console.WriteLine("\t\t        |      Random   |   Easy      |");
+                            Console.WriteLine("\t\t        |                 --------    |");
+                        }
+
+                        Console.WriteLine("\t\t        |_____________________________|");
+
+                        ConsoleKey key = Console.ReadKey(true).Key;
+
+                        if ((key == ConsoleKey.RightArrow || key == ConsoleKey.D) && computerDifficulty == "Random") computerDifficulty = "Easy";
+                        else if ((key == ConsoleKey.LeftArrow || key == ConsoleKey.A) && computerDifficulty == "Easy") computerDifficulty = "Random";
+                        else if (key == ConsoleKey.Enter) endLoop = true;
+
+                        Console.SetCursorPosition(0, Console.CursorTop - 3);
+                    } while (!endLoop);
+                }
+
                 // -------------------------------------------------------------------------------------
                 // ----------------------------| Player 1 Places His Ships |----------------------------
                 // -------------------------------------------------------------------------------------
@@ -66,7 +121,7 @@ namespace BattleshipGame
                 Console.Write("\n\nPress <Enter> to continue...");
                 while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
 
-                Player secondPlayer = new Player(isFirstPlayerTurn, true);
+                Player secondPlayer = new Player(isFirstPlayerTurn, isSecondPlayerComputer);
 
                 // --------------------------------------------------------------------
                 // ----------------------------| Gameloop |----------------------------
@@ -75,55 +130,102 @@ namespace BattleshipGame
                 bool didFirstPlayerWon = true;
                 bool endOfGame = false;
                 bool showEnemyMoves = false;
+                bool endPlayerAttack = false;
+                bool chooseStartingPlayer = true;
+                bool isFirstPlayerStarting = true;
                 do
                 {
+                    // ------------------------------------------------------------------------------------------
+                    // ----------------------------| Choosing the player who starts |----------------------------
+                    // ------------------------------------------------------------------------------------------
+
+                    if (chooseStartingPlayer)
+                    {
+                        chooseStartingPlayer = false;
+                        Console.Clear();
+                        Console.WriteLine("\n\n\t\t       _______________________________ ");
+                        Console.WriteLine("\t\t      |                               |");
+                        Console.WriteLine("\t\t      |    Which player starts game   |");
+                        Console.WriteLine("\t\t      |                               |");
+                        Console.WriteLine("\t\t      |                               |");
+
+                        endLoop = false;
+                        do
+                        {
+                            if (isFirstPlayerStarting)
+                            {
+                                Console.WriteLine("\t\t      |    Player 1   |   Player 2    |");
+                                Console.WriteLine("\t\t      |  ------------                 |");
+                            }
+                            else
+                            {
+                                Console.WriteLine("\t\t      |    Player 1   |   Player 2    |");
+                                Console.WriteLine("\t\t      |                 ------------  |");
+                            }
+
+                            Console.WriteLine("\t\t      |_______________________________|");
+
+                            ConsoleKey key1 = Console.ReadKey(true).Key;
+
+                            if ((key1 == ConsoleKey.RightArrow || key1 == ConsoleKey.D) && isFirstPlayerStarting) isFirstPlayerStarting = false;
+                            else if ((key1 == ConsoleKey.LeftArrow || key1 == ConsoleKey.A) && !isFirstPlayerStarting) isFirstPlayerStarting = true;
+                            else if (key1 == ConsoleKey.Enter) endLoop = true;
+
+                            Console.SetCursorPosition(0, Console.CursorTop - 3);
+                        } while (!endLoop);
+                    }
+
                     // -------------------------------------------------------------------------
                     // ----------------------------| Player 1 Turn |----------------------------
                     // -------------------------------------------------------------------------
-                    isFirstPlayerTurn = true;
-
-                    Console.Clear();
-                    Console.Write("\n\t| Player 1 Turn. Please swap places |");
-                    Console.Write("\n\nPress <Enter> to continue...");
-                    while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
-                    Console.Clear();
-
-                    Console.WriteLine("\n                                         | Player 1 Turn |\n");
-
-                    if (showEnemyMoves)
+                    if (isFirstPlayerStarting)
                     {
-                        Console.Write("\n Moves made by Player 2: \n");
-                        for (int i = 0; i < firstPlayer.enemyPlayerMoves.Count; i++)
-                        {
-                            Console.WriteLine("- " + firstPlayer.enemyPlayerMoves[i]);
-                        }
-                        firstPlayer.enemyPlayerMoves.Clear();
-                    }
+                        isFirstPlayerTurn = true;
 
-                    ShowGameboard();
-                    bool endPlayerAttack = false;
-                    do
-                    {
-                        endPlayerAttack = secondPlayer.EnemyPlayerAttack(false);
                         Console.Clear();
+                        Console.Write("\n\t| Player 1 Turn. Please swap places |");
+                        Console.Write("\n\nPress <Enter> to continue...");
+                        while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+                        Console.Clear();
+
                         Console.WriteLine("\n                                         | Player 1 Turn |\n");
+
+                        if (showEnemyMoves)
+                        {
+                            Console.Write("\n Moves made by Player 2: \n");
+                            for (int i = 0; i < firstPlayer.enemyPlayerMoves.Count; i++)
+                            {
+                                Console.WriteLine("- " + firstPlayer.enemyPlayerMoves[i]);
+                            }
+                            firstPlayer.enemyPlayerMoves.Clear();
+                        }
+                        else showEnemyMoves = true;
+
+
                         ShowGameboard();
-                        endOfGame = secondPlayer.CheckIfShipsAreAlive();
-                        if (endOfGame) break;
+                        do
+                        {
+                            endPlayerAttack = secondPlayer.EnemyPlayerAttack(false, computerDifficulty);
+                            Console.Clear();
+                            Console.WriteLine("\n                                         | Player 1 Turn |\n");
+                            ShowGameboard();
+                            endOfGame = secondPlayer.CheckIfShipsAreAlive();
+                            if (endOfGame) break;
 
-                        string messageForEnemyMove = !endPlayerAttack ? "HIT" : "MISS";
-                        Console.WriteLine($"\n Thats {messageForEnemyMove} !\n");
+                            string messageForEnemyMove = !endPlayerAttack ? "HIT" : "MISS";
+                            Console.WriteLine($"\n Thats {messageForEnemyMove} !\n");
 
-                    } while (!endPlayerAttack);
+                        } while (!endPlayerAttack);
 
-                    if (endOfGame)
-                    {
-                        didFirstPlayerWon = true;
-                        break;
+                        if (endOfGame)
+                        {
+                            didFirstPlayerWon = true;
+                            break;
+                        }
+                        Console.Write("Press <Enter> to continue...");
+                        while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
                     }
-                    Console.Write("Press <Enter> to continue...");
-                    while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
-
+                    else isFirstPlayerStarting = true;
                     // --------------------------------------------------------------------------
                     // ----------------------------| Player 2 Turn | ----------------------------
                     // --------------------------------------------------------------------------
@@ -137,19 +239,23 @@ namespace BattleshipGame
 
                     Console.WriteLine("\n                                         | Player 2 Turn |\n");
 
-                    Console.Write("\n Moves made by Player 1:");
-                    for (int i = 0; i < secondPlayer.enemyPlayerMoves.Count; i++)
+                    if (showEnemyMoves)
                     {
-                        Console.Write("\n- " + secondPlayer.enemyPlayerMoves[i]);
+                        Console.Write("\n Moves made by Player 1:");
+                        for (int i = 0; i < secondPlayer.enemyPlayerMoves.Count; i++)
+                        {
+                            Console.Write("\n- " + secondPlayer.enemyPlayerMoves[i]);
+                        }
+                        secondPlayer.enemyPlayerMoves.Clear();
                     }
-                    secondPlayer.enemyPlayerMoves.Clear();
+                    else showEnemyMoves = true;
 
                     ShowGameboard();
                     endPlayerAttack = false;
 
                     do
                     {
-                        endPlayerAttack = firstPlayer.EnemyPlayerAttack(true);
+                        endPlayerAttack = firstPlayer.EnemyPlayerAttack(isSecondPlayerComputer, computerDifficulty);
                         Console.Clear();
                         Console.WriteLine("\n                                         | Player 2 Turn |\n");
                         ShowGameboard();
@@ -158,7 +264,7 @@ namespace BattleshipGame
 
                         string messageForEnemyMove = !endPlayerAttack ? "HIT" : "MISS";
                         Console.WriteLine($"\n Thats {messageForEnemyMove} !\n");
-                      
+
                     } while (!endPlayerAttack);
 
                     if (endOfGame)
@@ -169,8 +275,6 @@ namespace BattleshipGame
                     Console.WriteLine("Press <Enter> to continue...");
                     while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
 
-                    showEnemyMoves = true;
-
                 } while (!endOfGame);
 
 
@@ -179,12 +283,12 @@ namespace BattleshipGame
                 // ------------------------------------------------------------------------
                 if (didFirstPlayerWon) firstPlayerWins++;
                 else secondPlayerWins++;
-                
+
                 int winningPlayerNumeber = didFirstPlayerWon ? 1 : 2;
                 Console.WriteLine("\n\t\t\t\t\t +---------------+");
                 Console.WriteLine($"\t\t\t\t\t | PLAYER {winningPlayerNumeber} WINS |");
                 Console.WriteLine("\t\t\t\t\t +---------------+");
-                      
+
                 Console.WriteLine($"\n\n\t\t         Total Player 1 Wins | {firstPlayerWins} : {secondPlayerWins} | Total Player 2 Wins      ");
 
 
@@ -194,7 +298,7 @@ namespace BattleshipGame
                 {
                     if (rematch) Console.WriteLine("\n\t\t\t\t     > Rematch < |   End Game  ");
                     else Console.WriteLine("\n\t\t\t\t       Rematch   | > End Game <");
-                    
+
                     ConsoleKey key = Console.ReadKey(true).Key;
 
                     if ((key == ConsoleKey.RightArrow || key == ConsoleKey.D) && rematch) rematch = false;
@@ -202,7 +306,7 @@ namespace BattleshipGame
                     else if (key == ConsoleKey.Enter) endLoop = true;
 
                     Console.SetCursorPosition(0, Console.CursorTop - 2);
-                } while(!endLoop);
+                } while (!endLoop);
 
                 if (!rematch) programShutdown = true;
 
@@ -226,7 +330,7 @@ namespace BattleshipGame
                                 string rowElement;
                                 if (i % 2 != 0)
                                 {
-                                    if(i == 1 || i == 21) rowElement = "---";
+                                    if (i == 1 || i == 21) rowElement = "---";
                                     else rowElement = "   ";
                                 }
                                 else if (j == 1 && isFirstPlayerTurn || j == 0 && !isFirstPlayerTurn)

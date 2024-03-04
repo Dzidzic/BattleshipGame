@@ -132,11 +132,11 @@ namespace BattleshipGame
             if(playerShips.Count == 0) return true;
             else return false;
         }
-        public bool EnemyPlayerAttack(bool isCopmuterAttacking)
+        public bool EnemyPlayerAttack(bool isCopmuterAttacking, string computerDifficulty)
         {   
             bool isThisHit;
 
-            int[] coordinates = CheckCorrectnessOfEnemyAttack(isCopmuterAttacking);          
+            int[] coordinates = CheckCorrectnessOfEnemyAttack(isCopmuterAttacking, computerDifficulty);          
 
             isThisHit = playerBoard.SetPlayingField(coordinates, playerShips, true);
 
@@ -215,14 +215,14 @@ namespace BattleshipGame
 
             return coordinates;
         }
-        int[] CheckCorrectnessOfEnemyAttack(bool isCopmuterAttacking)
+        int[] CheckCorrectnessOfEnemyAttack(bool isCopmuterAttacking, string computerDifficulty)
         {
             int[] coordinates = new int[2];
 
             bool endFirstLoop = false;
             do
             {
-                coordinates = isCopmuterAttacking ? computerMoves.MakeMove() : TakeCoordinatesFromUser();
+                coordinates = isCopmuterAttacking ? computerMoves.MakeMove(computerDifficulty) : TakeCoordinatesFromUser();
 
                 if (playerBoard.CheckIfPlayingFieldIsOccupied(coordinates))
                 {
