@@ -17,15 +17,32 @@ namespace BattleshipGame
             int firstPlayerWins = 0;
             int secondPlayerWins = 0;
             bool programShutdown = false;
-            do
-            {
+            
                 // ------------------------------------------------------------------------------------
                 // ----------------------------| Game info and inscrution |----------------------------
                 // ------------------------------------------------------------------------------------
 
                 Console.Clear();
-                Console.WriteLine("\n\t\t\t    Tu bedzie instrukcja gry");
+                Console.WriteLine("\n\t\t\tWelcome to the Battleship game!");
+                Console.WriteLine("\n\n\n    For better readability, it is recommended to slightly enlarge the console window");
+                Console.WriteLine("\n\n   Here are the main information that will be useful during the gameplay:");
+                Console.WriteLine("\n  - There are several \"windows\" in the game, that require the player");
+                Console.WriteLine(" to choose one of the options. The following keys are used to move between them:");
+                Console.WriteLine("\n   - 'LeftArrow' and 'A' are used to move left");
+                Console.WriteLine("   - 'RightArrow' and 'D' are used to move right");
+                Console.WriteLine("   - 'Enter' confirms the selected option ");
+                Console.WriteLine("\n - On the game board, you may encounter several different symbols, which includes:");
+                Console.WriteLine("\n  | - | This symbol indicates places where the player can take action (placing a ship or attacking).");
+                Console.WriteLine("  | O | This symbol informs the player that their ship is on the respective field.");
+                Console.WriteLine("  | @ | This symbol indicates that a segment of the ship has been hit.");
+                Console.WriteLine("  | X | This symbol represents a miss.");
 
+                Console.Write("\n\n\n If you carefully read informations\n Press <Enter> to continue...");
+                while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+
+            do
+            {
+                Console.Clear();
                 Console.WriteLine("\n\n\n\t\t _______________________________________________ ");
                 Console.WriteLine("\t\t|                                               |");
                 Console.WriteLine("\t\t|\t        Select game mode   \t\t|");
@@ -117,9 +134,12 @@ namespace BattleshipGame
                 isFirstPlayerTurn = false;
 
                 Console.Clear();
-                Console.Write("\n\t| Player 2 Round. Please swap places |");
-                Console.Write("\n\nPress <Enter> to continue...");
-                while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+                if (!isSecondPlayerComputer)
+                {
+                    Console.Write("\n\t| Player 2 Round. Please swap places |");
+                    Console.Write("\n\nPress <Enter> to continue...");
+                    while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+                }
 
                 Player secondPlayer = new Player(isFirstPlayerTurn, isSecondPlayerComputer);
 
@@ -183,9 +203,12 @@ namespace BattleshipGame
                         isFirstPlayerTurn = true;
 
                         Console.Clear();
-                        Console.Write("\n\t| Player 1 Turn. Please swap places |");
-                        Console.Write("\n\nPress <Enter> to continue...");
-                        while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+                        if (!isSecondPlayerComputer)
+                        {
+                            Console.Write("\n\t| Player 1 Turn. Please swap places |");
+                            Console.Write("\n\nPress <Enter> to continue...");
+                            while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+                        }
                         Console.Clear();
 
                         Console.WriteLine("\n                                         | Player 1 Turn |\n");
@@ -232,9 +255,12 @@ namespace BattleshipGame
                     isFirstPlayerTurn = false;
 
                     Console.Clear();
-                    Console.Write("\n\t| Player 2 Turn. Please swap places |");
-                    Console.Write("\n\nPress <Enter> to continue...");
-                    while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+                    if (!isSecondPlayerComputer)
+                    {
+                        Console.Write("\n\t| Player 2 Turn. Please swap places |");
+                        Console.Write("\n\nPress <Enter> to continue...");
+                        while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+                    }
                     Console.Clear();
 
                     Console.WriteLine("\n                                         | Player 2 Turn |\n");
@@ -250,7 +276,8 @@ namespace BattleshipGame
                     }
                     else showEnemyMoves = true;
 
-                    ShowGameboard();
+                    if(!isSecondPlayerComputer) ShowGameboard();
+
                     endPlayerAttack = false;
 
                     do
@@ -258,7 +285,7 @@ namespace BattleshipGame
                         endPlayerAttack = firstPlayer.EnemyPlayerAttack(isSecondPlayerComputer, computerDifficulty);
                         Console.Clear();
                         Console.WriteLine("\n                                         | Player 2 Turn |\n");
-                        ShowGameboard();
+                        if (!isSecondPlayerComputer) ShowGameboard();
                         endOfGame = firstPlayer.CheckIfShipsAreAlive();
                         if (endOfGame) break;
 
@@ -272,8 +299,13 @@ namespace BattleshipGame
                         didFirstPlayerWon = false;
                         break;
                     }
-                    Console.WriteLine("Press <Enter> to continue...");
-                    while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+                    
+                    if (!isSecondPlayerComputer)
+                    {
+                        Console.WriteLine("Press <Enter> to continue...");
+                        while (Console.ReadKey(true).Key != ConsoleKey.Enter) { }
+                    }
+                    
 
                 } while (!endOfGame);
 
